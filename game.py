@@ -1,15 +1,37 @@
 import pygame
+import math
 
 pygame.init()
-screen = pygame.display.set_mode((1280,720))
+window_h = 1024
+window_w = 1024
+fps = 60
+
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode((window_h, window_w))
+pygame.display.set_caption("SpaceBound")
+
+bg = pygame.image.load("./assets/back.png").convert()
+bg_h = bg.get_height()
+scroll =window_h-bg_h
 running = True
 while running:
 
+    clock.tick(fps)
+
+
+    for i in range(2):
+        screen.blit(bg,(0,scroll))
+        if scroll>0:
+            screen.blit(bg,(0,scroll-bg_h))
+        if scroll>window_h:
+            scroll=window_h-bg_h
+    scroll+=5
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    screen.fill("purple")
 
-    pygame.display.flip()
+    pygame.display.update()
 
 pygame.quit()
+
+
