@@ -40,6 +40,9 @@ class Game:
 
             self.background.update(self.screen)
 
+            player_group.update()
+            meteor_group.update()
+
             player_group.draw(self.screen)
             meteor_group.draw(self.screen)
 
