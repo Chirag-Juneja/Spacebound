@@ -6,3 +6,4 @@ fps = 60
 speed = 5
 bg_path = "./assets/back.png"
 player_path = "./assets/player.png"
+meteor_path = "./assets/meteors/"
