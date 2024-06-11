@@ -10,7 +10,7 @@ class Background:
         self.speed = gl.speed
         self.scroll = gl.window_height - self.h
 
-    def update(self, screen):
+    def draw(self, screen):
         screen.blit(self.bg, (0, self.scroll))
         win_h = gl.window_height
 

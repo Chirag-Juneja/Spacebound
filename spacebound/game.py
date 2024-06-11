@@ -11,23 +11,34 @@ class Game:
         pygame.init()
         self.create_window()
         self.clock = pygame.time.Clock()
-        self.player = Player()
-        self.background = Background()
-        self.meteors = [Meteor() for i in range(3)]
+        self.load_sprites()
 
     def create_window(self):
         self.screen = pygame.display.set_mode((gl.window_height, gl.window_width))
         pygame.display.set_caption(gl.window_name)
 
+    def load_sprites(self):
+        self.player = Player()
+        self.background = Background()
+        self.meteors = [Meteor() for i in range(3)]
+
+        self.player_group = pygame.sprite.Group()
+        self.player_group.add(self.player)
+
+        self.meteor_group = pygame.sprite.Group()
+        self.meteor_group.add(self.meteors)
+
+    def update(self):
+        self.player_group.update()
+        self.meteor_group.update()
+
+    def draw(self):
+        self.background.draw(self.screen)
+        self.player_group.draw(self.screen)
+        self.meteor_group.draw(self.screen)
+
     def run(self):
         running = True
-
-        player_group = pygame.sprite.Group()
-
-        player_group.add(self.player)
-        meteor_group = pygame.sprite.Group()
-        meteor_group.add(self.meteors)
-
         while running:
             self.clock.tick(gl.fps)
 
@@ -35,13 +46,8 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
 
-            self.background.update(self.screen)
-
-            player_group.update()
-            meteor_group.update()
-
-            player_group.draw(self.screen)
-            meteor_group.draw(self.screen)
+            self.update()
+            self.draw()
 
             pygame.display.update()
 
