@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 from random import randint
 import spacebound.globals as gl
 from .background import Background
@@ -10,10 +11,16 @@ class Game:
 
     def __init__(self):
         pygame.init()
+        mixer.init()
         self.create_window()
         self.clock = pygame.time.Clock()
         self.event_counter = 1
         self.load_sprites()
+        self.play_music()
+
+    def play_music(self):
+        mixer.music.load(gl.bg_music)
+        mixer.music.play(-1, 0, 3)
 
     def create_window(self):
         self.screen = pygame.display.set_mode((gl.window_height, gl.window_width))
