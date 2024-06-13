@@ -40,7 +40,7 @@ class Game:
     def create_events(self):
         self.METEOR_EVENT = pygame.USEREVENT + self.event_counter
         pygame.time.set_timer(self.METEOR_EVENT, 1000)
-        self.event_counter+=1
+        self.event_counter += 1
 
     def update(self):
         self.player_group.update()
@@ -55,6 +55,16 @@ class Game:
         meteors = [Meteor() for i in range(randint(0, 3))]
         self.meteor_group.add(meteors)
 
+    def handle_input(self, keys):
+        if keys[pygame.K_LEFT]:
+            self.player.move(-gl.speed, 0)
+        if keys[pygame.K_RIGHT]:
+            self.player.move(gl.speed, 0)
+        if keys[pygame.K_UP]:
+            self.player.move(0, -gl.speed)
+        if keys[pygame.K_DOWN]:
+            self.player.move(0, gl.speed)
+
     def run(self):
         running = True
         while running:
@@ -65,6 +75,8 @@ class Game:
                     running = False
                 if event.type == self.METEOR_EVENT:
                     self.add_meteors()
+            keys = pygame.key.get_pressed()
+            self.handle_input(keys)
 
             self.update()
             self.draw()
