@@ -1,7 +1,7 @@
 import pygame
 from pathlib import Path
-from random import randint
 import spacebound.globals as gl
+import random
 
 
 class Meteor(pygame.sprite.Sprite):
@@ -9,10 +9,12 @@ class Meteor(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.images = []
         paths = list(Path(gl.meteor_path).iterdir())
-        idx = randint(0, len(paths) - 1)
+        idx = random.randint(0, len(paths) - 1)
         self.image = pygame.image.load(paths[idx])
         self.rect = self.image.get_rect()
-        self.rect.center = [randint(0, gl.window_width), -100]
+        options = [int(idx*gl.window_width*0.1) for idx in range(10)]
+        x = random.choice(options)
+        self.rect.center = [x, -100]
 
     def update(self):
         self.rect.y += gl.speed
