@@ -8,3 +8,5 @@ bg_path = "./assets/back.png"
 player_path = "./assets/player.png"
 meteor_path = "./assets/meteors/"
 bg_music = "./assets/SpaceMusic.mp3"
+font_path = "./assets/kenvector_future.ttf"
+white = (255, 255, 255)

@@ -13,10 +13,13 @@ class Game:
         pygame.init()
         mixer.init()
         self.create_window()
+        self.font = pygame.font.Font(gl.font_path, 20)
         self.clock = pygame.time.Clock()
         self.event_counter = 1
         self.load_sprites()
         self.play_music()
+        self.score = 0
+        self.life = True
 
     def play_music(self):
         mixer.music.load(gl.bg_music)
@@ -41,6 +44,9 @@ class Game:
         self.METEOR_EVENT = pygame.USEREVENT + self.event_counter
         pygame.time.set_timer(self.METEOR_EVENT, 1000)
         self.event_counter += 1
+        self.SCORE_EVENT = pygame.USEREVENT + self.event_counter
+        pygame.time.set_timer(self.SCORE_EVENT, 1000)
+        self.event_counter += 1
 
     def update(self):
         self.player_group.update()
@@ -50,6 +56,7 @@ class Game:
         self.background.draw(self.screen)
         self.player_group.draw(self.screen)
         self.meteor_group.draw(self.screen)
+        self.draw_score()
 
     def add_meteors(self):
         meteors = [Meteor() for i in range(randint(0, 3))]
@@ -66,10 +73,21 @@ class Game:
             self.player.move(0, gl.speed)
 
     def collision(self):
-        running = True
         if pygame.sprite.groupcollide(self.player_group, self.meteor_group, False, False):
-            running = False
-        return running
+            self.life = False
+
+    def draw_text(self, text, color, x, y):
+        img = self.font.render(text, True, color)
+        w = img.get_width()
+        self.screen.blit(img, (x-w//2, y))
+
+    def update_score(self):
+        self.score += 1
+
+    def draw_score(self):
+        x = int(gl.window_width/2)
+        y = int(gl.window_height*0.05)
+        self.draw_text("Score: " + str(self.score), gl.white, x, y)
 
     def run(self):
         running = True
@@ -81,11 +99,18 @@ class Game:
                     running = False
                 if event.type == self.METEOR_EVENT:
                     self.add_meteors()
+                if event.type == self.SCORE_EVENT:
+                    self.update_score()
+
             keys = pygame.key.get_pressed()
+
             self.handle_input(keys)
-            running = self.collision()
+            self.collision()
             self.update()
             self.draw()
+
+            if not self.life:
+                running = False
 
             pygame.display.update()
 
