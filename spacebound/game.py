@@ -65,6 +65,12 @@ class Game:
         if keys[pygame.K_DOWN]:
             self.player.move(0, gl.speed)
 
+    def collision(self):
+        running = True
+        if pygame.sprite.groupcollide(self.player_group, self.meteor_group, False, False):
+            running = False
+        return running
+
     def run(self):
         running = True
         while running:
@@ -77,7 +83,7 @@ class Game:
                     self.add_meteors()
             keys = pygame.key.get_pressed()
             self.handle_input(keys)
-
+            running = self.collision()
             self.update()
             self.draw()
 
