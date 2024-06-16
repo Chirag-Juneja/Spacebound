@@ -5,7 +5,7 @@ import random
 
 
 class Meteor(pygame.sprite.Sprite):
-    def __init__(self, speed=5):
+    def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.images = []
         paths = list(Path(gl.meteor_path).iterdir())

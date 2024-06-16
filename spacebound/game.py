@@ -5,6 +5,7 @@ import spacebound.globals as gl
 from .background import Background
 from .sprites.player import Player
 from .sprites.meteor import Meteor
+from .sprites.laser import Laser
 
 
 class Game:
@@ -38,6 +39,8 @@ class Game:
 
         self.meteor_group = pygame.sprite.Group()
         self.add_meteors()
+
+        self.laser_group = pygame.sprite.Group()
         self.create_events()
 
     def create_events(self):
@@ -51,16 +54,23 @@ class Game:
     def update(self):
         self.player_group.update()
         self.meteor_group.update()
+        self.laser_group.update()
 
     def draw(self):
         self.background.draw(self.screen)
         self.player_group.draw(self.screen)
         self.meteor_group.draw(self.screen)
+        self.laser_group.draw(self.screen)
         self.draw_score()
 
     def add_meteors(self):
         meteors = [Meteor() for i in range(randint(0, 3))]
         self.meteor_group.add(meteors)
+
+    def fire(self):
+        laser = self.player.fire()
+        if laser:
+            self.laser_group.add(laser)
 
     def handle_input(self, keys):
         if keys[pygame.K_LEFT]:
@@ -71,6 +81,8 @@ class Game:
             self.player.move(0, -gl.speed)
         if keys[pygame.K_DOWN]:
             self.player.move(0, gl.speed)
+        if keys[pygame.K_SPACE]:
+            self.fire()
 
     def collision(self):
         if pygame.sprite.groupcollide(self.player_group, self.meteor_group, False, False):

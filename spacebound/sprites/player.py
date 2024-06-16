@@ -1,5 +1,6 @@
 import pygame
 import spacebound.globals as gl
+from .laser import Laser
 
 
 class Player(pygame.sprite.Sprite):
@@ -10,6 +11,9 @@ class Player(pygame.sprite.Sprite):
         self.x = int(gl.window_width / 2)
         self.y = gl.window_height - int(gl.window_height*0.1)
         self.rect.center = [self.x, self.y]
+        self.fire_ready = True
+        self.cooldown = 500
+        self.last_fired = 0
 
     def move(self, dx=0, dy=0):
         if self.rect.left < 0 and dx < 0:
@@ -23,6 +27,18 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom > gl.window_width and dy > 0:
             dy = 0
         self.y += dy
+
+    def fire(self):
+        now = pygame.time.get_ticks()
+
+        if now - self.last_fired >= self.cooldown:
+            self.fire_ready = True
+
+        if self.fire_ready:
+            self.fire_ready = False
+            self.last_fired = pygame.time.get_ticks()
+            laser = Laser(self.x, self.y, 0)
+            return laser
 
     def update(self):
         self.rect.center = [self.x, self.y]
