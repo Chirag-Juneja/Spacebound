@@ -87,6 +87,10 @@ class Game:
     def collision(self):
         if pygame.sprite.groupcollide(self.player_group, self.meteor_group, False, False):
             self.life = False
+        laser_collisions = pygame.sprite.groupcollide(self.laser_group, self.meteor_group, False, False)
+        for laser in laser_collisions:
+            laser.hit = True
+
 
     def draw_text(self, text, color, x, y):
         img = self.font.render(text, True, color)

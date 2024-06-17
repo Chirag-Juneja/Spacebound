@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.y = gl.window_height - int(gl.window_height*0.1)
         self.rect.center = [self.x, self.y]
         self.fire_ready = True
-        self.cooldown = 500
+        self.cooldown = 200
         self.last_fired = 0
 
     def move(self, dx=0, dy=0):
