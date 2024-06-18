@@ -6,6 +6,7 @@ from .background import Background
 from .sprites.player import Player
 from .sprites.meteor import Meteor
 from .sprites.laser import Laser
+from .sprites.enemy import Enemy
 
 
 class Game:
@@ -40,6 +41,8 @@ class Game:
         self.meteor_group = pygame.sprite.Group()
         self.add_meteors()
 
+        self.enemy_group = pygame.sprite.Group()
+
         self.laser_group = pygame.sprite.Group()
         self.create_events()
 
@@ -50,17 +53,29 @@ class Game:
         self.SCORE_EVENT = pygame.USEREVENT + self.event_counter
         pygame.time.set_timer(self.SCORE_EVENT, 1000)
         self.event_counter += 1
+        self.ENEMY_EVENT = pygame.USEREVENT + self.event_counter
+        pygame.time.set_timer(self.ENEMY_EVENT, 500)
+        self.event_counter += 1
+
+    def create_enemy(self):
+        enemy = Enemy()
+        self.enemy_group.add(enemy)
 
     def update(self):
         self.player_group.update()
         self.meteor_group.update()
         self.laser_group.update()
+        if not len(self.enemy_group):
+            self.create_enemy()
+        target = self.player.x, self.player.y
+        self.enemy_group.update(target)
 
     def draw(self):
         self.background.draw(self.screen)
-        self.player_group.draw(self.screen)
         self.meteor_group.draw(self.screen)
         self.laser_group.draw(self.screen)
+        self.player_group.draw(self.screen)
+        self.enemy_group.draw(self.screen)
         self.draw_score()
 
     def add_meteors(self):
@@ -91,6 +106,11 @@ class Game:
         for laser in laser_collisions:
             laser.hit = True
 
+    def enemy_ai(self):
+        for enemy in self.enemy_group.sprites():
+            laser = enemy.fire()
+            if laser:
+                self.laser_group.add(laser)
 
     def draw_text(self, text, color, x, y):
         img = self.font.render(text, True, color)
@@ -117,6 +137,8 @@ class Game:
                     self.add_meteors()
                 if event.type == self.SCORE_EVENT:
                     self.update_score()
+                if event.type == self.ENEMY_EVENT:
+                    self.enemy_ai()
 
             keys = pygame.key.get_pressed()
 
