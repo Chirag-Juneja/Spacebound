@@ -21,7 +21,6 @@ class Game:
         self.load_sprites()
         self.play_music()
         self.score = 0
-        self.life = True
 
     def play_music(self):
         mixer.music.load(gl.bg_music)
@@ -43,7 +42,10 @@ class Game:
 
         self.enemy_group = pygame.sprite.Group()
 
-        self.laser_group = pygame.sprite.Group()
+        self.player_laser_group = pygame.sprite.Group()
+
+        self.enemy_laser_group = pygame.sprite.Group()
+
         self.create_events()
 
     def create_events(self):
@@ -64,7 +66,8 @@ class Game:
     def update(self):
         self.player_group.update()
         self.meteor_group.update()
-        self.laser_group.update()
+        self.player_laser_group.update()
+        self.enemy_laser_group.update()
         if not len(self.enemy_group):
             self.create_enemy()
         target = self.player.x, self.player.y
@@ -73,7 +76,8 @@ class Game:
     def draw(self):
         self.background.draw(self.screen)
         self.meteor_group.draw(self.screen)
-        self.laser_group.draw(self.screen)
+        self.player_laser_group.draw(self.screen)
+        self.enemy_laser_group.draw(self.screen)
         self.player_group.draw(self.screen)
         self.enemy_group.draw(self.screen)
         self.draw_score()
@@ -85,9 +89,11 @@ class Game:
     def fire(self):
         laser = self.player.fire()
         if laser:
-            self.laser_group.add(laser)
+            self.player_laser_group.add(laser)
 
     def handle_input(self, keys):
+        if not len(self.player_group):
+            return
         if keys[pygame.K_LEFT]:
             self.player.move(-gl.speed, 0)
         if keys[pygame.K_RIGHT]:
@@ -100,29 +106,49 @@ class Game:
             self.fire()
 
     def collision(self):
-        if pygame.sprite.groupcollide(self.player_group, self.meteor_group, False, False):
-            self.life = False
-        laser_collisions = pygame.sprite.groupcollide(self.laser_group, self.meteor_group, False, False)
-        for laser in laser_collisions:
+        player_collision = pygame.sprite.groupcollide(
+            self.player_group, self.meteor_group, False, False
+        )
+        for player in player_collision:
+            player.destroy = True
+        enemy_laser_collisions = pygame.sprite.groupcollide(
+            self.enemy_laser_group, self.meteor_group, False, False
+        )
+        for laser in enemy_laser_collisions:
             laser.hit = True
+        player_laser_collisions = pygame.sprite.groupcollide(
+            self.player_laser_group, self.meteor_group, False, False
+        )
+        for laser in player_laser_collisions:
+            laser.hit = True
+        player_collision = pygame.sprite.groupcollide(
+            self.player_group, self.enemy_laser_group, False, False
+        )
+        for player in player_collision:
+            player.destroy = True
+        enemy_collision = pygame.sprite.groupcollide(
+            self.enemy_group, self.player_laser_group, False, False
+        )
+        for enemy in enemy_collision:
+            enemy.destroy = True
 
     def enemy_ai(self):
         for enemy in self.enemy_group.sprites():
             laser = enemy.fire()
             if laser:
-                self.laser_group.add(laser)
+                self.enemy_laser_group.add(laser)
 
     def draw_text(self, text, color, x, y):
         img = self.font.render(text, True, color)
         w = img.get_width()
-        self.screen.blit(img, (x-w//2, y))
+        self.screen.blit(img, (x - w // 2, y))
 
     def update_score(self):
         self.score += 1
 
     def draw_score(self):
-        x = int(gl.window_width/2)
-        y = int(gl.window_height*0.05)
+        x = int(gl.window_width / 2)
+        y = int(gl.window_height * 0.05)
         self.draw_text("Score: " + str(self.score), gl.white, x, y)
 
     def run(self):
@@ -146,9 +172,6 @@ class Game:
             self.collision()
             self.update()
             self.draw()
-
-            if not self.life:
-                running = False
 
             pygame.display.update()
 

@@ -33,7 +33,7 @@ class Laser(pygame.sprite.Sprite):
                 self.kill()
             self.blast_counter -= 1
         else:
-            speed = gl.speed*5
+            speed = gl.speed * 5
             if not self.direction:
                 speed = -speed
             self.rect.y += speed

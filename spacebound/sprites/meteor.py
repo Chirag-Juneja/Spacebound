@@ -12,7 +12,7 @@ class Meteor(pygame.sprite.Sprite):
         idx = random.randint(0, len(paths) - 1)
         self.image = pygame.image.load(paths[idx])
         self.rect = self.image.get_rect()
-        options = [int(idx*gl.window_width*0.1) for idx in range(10)]
+        options = [int(idx * gl.window_width * 0.1) for idx in range(10)]
         x = random.choice(options)
         self.rect.center = [x, -100]
 

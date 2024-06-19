@@ -8,22 +8,26 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load(gl.enemy_path)
+        self.image_blast = pygame.image.load(gl.laser_green_blast_path)
         self.rect = self.image.get_rect()
         self.x = random.randint(0, gl.window_width)
-        self.y = -int(gl.window_height*0.1)
-        self.rect_center = [self.x, self.y]
+        self.y = -int(gl.window_height * 0.1)
+        self.rect.center = [self.x, self.y]
         self.fire_ready = True
         self.cooldown = 500
         self.last_fired = 0
+        self.destroy = False
+        self.blast_counter = 5
 
     def move(self, target):
         tx, ty = target
+        speed = int(gl.speed * 0.5)
         dx = 0
         if self.x - tx < 0:
-            dx = gl.speed
+            dx = speed
         if self.x - tx > 0:
-            dx = -gl.speed
-        if self.y > gl.window_height*0.2:
+            dx = -speed
+        if self.y > gl.window_height * 0.2:
             dy = 0
         else:
             dy = gl.speed
@@ -31,6 +35,9 @@ class Enemy(pygame.sprite.Sprite):
         self.y += dy
 
     def fire(self):
+        if self.destroy:
+            return
+
         now = pygame.time.get_ticks()
 
         if now - self.last_fired >= self.cooldown:
@@ -43,5 +50,13 @@ class Enemy(pygame.sprite.Sprite):
             return laser
 
     def update(self, target):
-        self.move(target)
-        self.rect.center = [self.x, self.y]
+        if self.destroy:
+            self.image = self.image_blast
+            self.rect = self.image.get_rect()
+            self.rect.center = [self.x, self.y]
+            if self.blast_counter == 0:
+                self.kill()
+            self.blast_counter -= 1
+        else:
+            self.move(target)
+            self.rect.center = [self.x, self.y]
