@@ -7,6 +7,7 @@ from .sprites.player import Player
 from .sprites.meteor import Meteor
 from .sprites.laser import Laser
 from .sprites.enemy import Enemy
+from .menu import Menu
 
 
 class Game:
@@ -21,6 +22,8 @@ class Game:
         self.load_sprites()
         self.play_music()
         self.score = 0
+        self.play = False
+        self.menu = Menu()
 
     def play_music(self):
         mixer.music.load(gl.bg_music)
@@ -73,8 +76,10 @@ class Game:
         target = self.player.x, self.player.y
         self.enemy_group.update(target)
 
-    def draw(self):
+    def draw_background(self):
         self.background.draw(self.screen)
+
+    def draw(self):
         self.meteor_group.draw(self.screen)
         self.player_laser_group.draw(self.screen)
         self.enemy_laser_group.draw(self.screen)
@@ -156,23 +161,35 @@ class Game:
         while running:
             self.clock.tick(gl.fps)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                if event.type == self.METEOR_EVENT:
-                    self.add_meteors()
-                if event.type == self.SCORE_EVENT:
-                    self.update_score()
-                if event.type == self.ENEMY_EVENT:
-                    self.enemy_ai()
+            self.draw_background()
 
-            keys = pygame.key.get_pressed()
+            if self.play:
 
-            self.handle_input(keys)
-            self.collision()
-            self.update()
-            self.draw()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                    if event.type == self.METEOR_EVENT:
+                        self.add_meteors()
+                    if event.type == self.SCORE_EVENT:
+                        self.update_score()
+                    if event.type == self.ENEMY_EVENT:
+                        self.enemy_ai()
 
+                keys = pygame.key.get_pressed()
+
+                self.handle_input(keys)
+                self.collision()
+                self.update()
+                self.draw()
+
+            else:
+                self.menu.main(self.screen)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RETURN:
+                            self.play = True
             pygame.display.update()
 
         pygame.quit()
