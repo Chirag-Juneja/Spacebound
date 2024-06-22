@@ -16,14 +16,17 @@ class Game:
         pygame.init()
         mixer.init()
         self.create_window()
-        self.font = pygame.font.Font(gl.font_path, 20)
+        self.score_font = pygame.font.Font(gl.font_path, 20)
         self.clock = pygame.time.Clock()
         self.event_counter = 1
-        self.load_sprites()
         self.play_music()
-        self.score = 0
-        self.play = False
+        self.mode = "menu"
         self.menu = Menu()
+        self.reset()
+
+    def reset(self):
+        self.score = 0
+        self.load_sprites()
 
     def play_music(self):
         mixer.music.load(gl.bg_music)
@@ -144,12 +147,13 @@ class Game:
                 self.enemy_laser_group.add(laser)
 
     def draw_text(self, text, color, x, y):
-        img = self.font.render(text, True, color)
+        img = self.score_font.render(text, True, color)
         w = img.get_width()
         self.screen.blit(img, (x - w // 2, y))
 
     def update_score(self):
-        self.score += 1
+        if self.mode == "play":
+            self.score += 1
 
     def draw_score(self):
         x = int(gl.window_width / 2)
@@ -163,7 +167,7 @@ class Game:
 
             self.draw_background()
 
-            if self.play:
+            if self.mode == "play":
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -182,14 +186,17 @@ class Game:
                 self.update()
                 self.draw()
 
-            else:
-                self.menu.main(self.screen)
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        running = False
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_RETURN:
-                            self.play = True
+                if not len(self.player_group):
+                    self.mode = "retry"
+
+            if self.mode == "menu":
+                running, self.mode = self.menu.main(self.screen)
+
+            if self.mode == "retry":
+                running, self.mode = self.menu.retry(self.screen, self.score)
+                if self.mode == "play":
+                    self.reset()
+
             pygame.display.update()
 
         pygame.quit()
