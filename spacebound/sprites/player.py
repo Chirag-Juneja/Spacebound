@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.cooldown = 200
         self.last_fired = 0
         self.destroy = False
-        self.blast_counter = 5
+        self.blast_counter = 10
 
     def move(self, dx=0, dy=0):
         if self.rect.left < 0 and dx < 0:

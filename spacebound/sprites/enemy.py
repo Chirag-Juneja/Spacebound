@@ -14,20 +14,38 @@ class Enemy(pygame.sprite.Sprite):
         self.y = -int(gl.window_height * 0.1)
         self.rect.center = [self.x, self.y]
         self.fire_ready = True
-        self.cooldown = 500
+        self.cooldown = 300
         self.last_fired = 0
         self.destroy = False
         self.blast_counter = 5
+        self.gap = 5
 
-    def move(self, target):
+    def move(self, target, meteor_group):
+        meteor_corners = []
+        for meteor in meteor_group:
+            if meteor.rect.top < self.rect.bottom:
+                meteor_corners.append([meteor.rect.left, meteor.rect.top])
+                meteor_corners.append([meteor.rect.right, meteor.rect.top])
+                meteor_corners.append([meteor.rect.left, meteor.rect.bottom])
+                meteor_corners.append([meteor.rect.right, meteor.rect.bottom])
+
+        left = max([cord[0] for cord in meteor_corners if cord[0] < self.x] + [0])
+        right = min([cord[0] for cord in meteor_corners if cord[0] > self.x]+ [gl.window_width])
+
         tx, ty = target
-        speed = int(gl.speed * 0.5)
+
+        if left > self.rect.left - self.gap:
+            tx = self.rect.right
+        if right < self.rect.right + self.gap:
+            tx = self.rect.left
+
+        speed = int(gl.speed * 0.7)
         dx = 0
         if self.x - tx < 0:
             dx = speed
         if self.x - tx > 0:
             dx = -speed
-        if self.y > gl.window_height * 0.2:
+        if self.y > gl.window_height * 0.4:
             dy = 0
         else:
             dy = gl.speed
@@ -49,7 +67,7 @@ class Enemy(pygame.sprite.Sprite):
             laser = Laser(self.x, self.y, 1, "Green")
             return laser
 
-    def update(self, target):
+    def update(self, target, meteor_group):
         if self.destroy:
             self.image = self.image_blast
             self.rect = self.image.get_rect()
@@ -58,5 +76,5 @@ class Enemy(pygame.sprite.Sprite):
                 self.kill()
             self.blast_counter -= 1
         else:
-            self.move(target)
+            self.move(target, meteor_group)
             self.rect.center = [self.x, self.y]

@@ -77,7 +77,7 @@ class Game:
         if not len(self.enemy_group):
             self.create_enemy()
         target = self.player.x, self.player.y
-        self.enemy_group.update(target)
+        self.enemy_group.update(target, self.meteor_group)
 
     def draw_background(self):
         self.background.draw(self.screen)
@@ -139,8 +139,13 @@ class Game:
         )
         for enemy in enemy_collision:
             enemy.destroy = True
+        enemy_collision = pygame.sprite.groupcollide(
+            self.enemy_group, self.meteor_group, False, False
+        )
+        for enemy in enemy_collision:
+            enemy.destroy = True
 
-    def enemy_ai(self):
+    def enemy_fire(self):
         for enemy in self.enemy_group.sprites():
             laser = enemy.fire()
             if laser:
@@ -177,7 +182,7 @@ class Game:
                     if event.type == self.SCORE_EVENT:
                         self.update_score()
                     if event.type == self.ENEMY_EVENT:
-                        self.enemy_ai()
+                        self.enemy_fire()
 
                 keys = pygame.key.get_pressed()
 

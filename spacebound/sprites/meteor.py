@@ -18,5 +18,7 @@ class Meteor(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.y += gl.speed
+        self.x = self.rect.x
+        self.y = self.rect.y
         if self.rect.top > gl.window_height:
             self.kill()
