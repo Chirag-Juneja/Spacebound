@@ -13,7 +13,7 @@ class Player(pygame.sprite.Sprite):
         self.y = gl.window_height - int(gl.window_height * 0.1)
         self.rect.center = [self.x, self.y]
         self.fire_ready = True
-        self.cooldown = 200
+        self.cooldown = 500
         self.last_fired = 0
         self.destroy = False
         self.blast_counter = 10

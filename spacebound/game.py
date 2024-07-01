@@ -8,6 +8,7 @@ from .sprites.meteor import Meteor
 from .sprites.laser import Laser
 from .sprites.enemy import Enemy
 from .menu import Menu
+from .audio import Audio
 
 
 class Game:
@@ -19,7 +20,7 @@ class Game:
         self.score_font = pygame.font.Font(gl.font_path, 20)
         self.clock = pygame.time.Clock()
         self.event_counter = 1
-        self.play_music()
+        self.audio = Audio()
         self.mode = "menu"
         self.menu = Menu()
         self.reset()
@@ -27,10 +28,6 @@ class Game:
     def reset(self):
         self.score = 0
         self.load_sprites()
-
-    def play_music(self):
-        mixer.music.load(gl.bg_music)
-        mixer.music.play(-1, 0, 3)
 
     def create_window(self):
         self.screen = pygame.display.set_mode((gl.window_height, gl.window_width))
@@ -97,6 +94,7 @@ class Game:
     def fire(self):
         laser = self.player.fire()
         if laser:
+            self.audio.laser()
             self.player_laser_group.add(laser)
 
     def handle_input(self, keys):
@@ -149,6 +147,7 @@ class Game:
         for enemy in self.enemy_group.sprites():
             laser = enemy.fire()
             if laser:
+                self.audio.laser()
                 self.enemy_laser_group.add(laser)
 
     def draw_text(self, text, color, x, y):

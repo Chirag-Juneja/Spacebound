@@ -14,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
         self.y = -int(gl.window_height * 0.1)
         self.rect.center = [self.x, self.y]
         self.fire_ready = True
-        self.cooldown = 300
+        self.cooldown = 1000
         self.last_fired = 0
         self.destroy = False
         self.blast_counter = 5
