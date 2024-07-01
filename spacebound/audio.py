@@ -3,10 +3,7 @@ import spacebound.globals as gl
 
 
 class Audio:
-    channels = {
-            "background": 0,
-            "laser": 1
-            }
+    channels = {"background": 0, "laser": 1}
 
     def __init__(self):
         pygame.mixer.init()

@@ -30,7 +30,9 @@ class Enemy(pygame.sprite.Sprite):
                 meteor_corners.append([meteor.rect.right, meteor.rect.bottom])
 
         left = max([cord[0] for cord in meteor_corners if cord[0] < self.x] + [0])
-        right = min([cord[0] for cord in meteor_corners if cord[0] > self.x]+ [gl.window_width])
+        right = min(
+            [cord[0] for cord in meteor_corners if cord[0] > self.x] + [gl.window_width]
+        )
 
         tx, ty = target
 
