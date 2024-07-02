@@ -117,6 +117,7 @@ class Game:
         )
         for player in player_collision:
             player.destroy = True
+            self.audio.explosion_player()
         enemy_laser_collisions = pygame.sprite.groupcollide(
             self.enemy_laser_group, self.meteor_group, False, False
         )
@@ -132,16 +133,19 @@ class Game:
         )
         for player in player_collision:
             player.destroy = True
+            self.audio.explosion_player()
         enemy_collision = pygame.sprite.groupcollide(
             self.enemy_group, self.player_laser_group, False, False
         )
         for enemy in enemy_collision:
             enemy.destroy = True
+            self.audio.explosion_enemy()
         enemy_collision = pygame.sprite.groupcollide(
             self.enemy_group, self.meteor_group, False, False
         )
         for enemy in enemy_collision:
             enemy.destroy = True
+            self.audio.explosion_enemy()
 
     def enemy_fire(self):
         for enemy in self.enemy_group.sprites():
