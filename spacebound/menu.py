@@ -43,3 +43,21 @@ class Menu:
                 if event.key == pygame.K_ESCAPE:
                     running = False
         return running, mode
+
+    def end(self, screen, score):
+        running = True
+        mode = "end"
+        self.display(screen, self.header_font, f"Score: {score}", 0.5, 0.2)
+        self.display(screen, self.header_font, "Congratulations", 0.5, 0.5)
+        self.display(screen, self.message_font, "Press Enter to Play again", 0.5, 0.7)
+        self.display(screen, self.message_font, "Press Esc to Exit", 0.5, 0.8)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    mode = "play"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+        return running, mode

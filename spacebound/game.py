@@ -1,6 +1,5 @@
 import pygame
 from pygame import mixer
-from random import randint
 import spacebound.globals as gl
 from .background import Background
 from .sprites.player import Player
@@ -24,12 +23,16 @@ class Game:
         self.audio = Audio()
         self.mode = "menu"
         self.menu = Menu()
+        self.n_level = 1
         self.reset()
 
     def reset(self):
         self.score = 0
-        self.level = Duel()
+        self.level_idx = 0
+        self.levels = [Duel()]
+        self.level = self.levels[0]
         self.load_sprites()
+        self.load_level()
 
     def create_window(self):
         self.screen = pygame.display.set_mode((gl.window_height, gl.window_width))
@@ -42,17 +45,15 @@ class Game:
         self.player_group = pygame.sprite.Group()
         self.player_group.add(self.player)
 
-        self.meteor_group = pygame.sprite.Group()
-        self.add_meteors()
-
-        # self.enemy_group = pygame.sprite.Group()
-        self.enemy_group = self.level.enemy_group
-
         self.player_laser_group = pygame.sprite.Group()
 
         self.enemy_laser_group = pygame.sprite.Group()
 
         self.create_events()
+
+    def load_level(self):
+        self.meteor_group = self.level.meteor_group
+        self.enemy_group = self.level.enemy_group
 
     def create_events(self):
         self.METEOR_EVENT = pygame.USEREVENT + self.event_counter
@@ -65,9 +66,13 @@ class Game:
         pygame.time.set_timer(self.ENEMY_EVENT, 500)
         self.event_counter += 1
 
-    def create_enemy(self):
-        enemy = Enemy()
-        self.enemy_group.add(enemy)
+    def change_level(self):
+        self.level_idx += 1
+        if self.level_idx >= self.n_level:
+            self.mode = "end"
+        else:
+            self.level = self.levels[self.level_idx]
+            self.load_level()
 
     def update(self):
         self.player_group.update()
@@ -75,10 +80,8 @@ class Game:
         self.player_laser_group.update()
         self.enemy_laser_group.update()
         self.level.update(self.player)
-        # if not len(self.enemy_group):
-            # self.create_enemy()
-        target = self.player.x, self.player.y
-        self.enemy_group.update(target, self.meteor_group)
+        if not self.level.isactive:
+            self.change_level()
 
     def draw_background(self):
         self.background.draw(self.screen)
@@ -90,10 +93,6 @@ class Game:
         self.player_group.draw(self.screen)
         self.enemy_group.draw(self.screen)
         self.draw_score()
-
-    def add_meteors(self):
-        meteors = [Meteor() for i in range(randint(0, 2))]
-        self.meteor_group.add(meteors)
 
     def fire(self):
         laser = self.player.fire()
@@ -185,7 +184,7 @@ class Game:
                     if event.type == pygame.QUIT:
                         running = False
                     if event.type == self.METEOR_EVENT:
-                        self.add_meteors()
+                        self.level.meteor_event()
                     if event.type == self.SCORE_EVENT:
                         self.update_score()
                     if event.type == self.ENEMY_EVENT:
@@ -206,6 +205,11 @@ class Game:
 
             if self.mode == "retry":
                 running, self.mode = self.menu.retry(self.screen, self.score)
+                if self.mode == "play":
+                    self.reset()
+
+            if self.mode == "end":
+                running, self.mode = self.menu.end(self.screen, self.score)
                 if self.mode == "play":
                     self.reset()
 
