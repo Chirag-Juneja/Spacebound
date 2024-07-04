@@ -9,6 +9,7 @@ from .sprites.laser import Laser
 from .sprites.enemy import Enemy
 from .menu import Menu
 from .audio import Audio
+from .levels import Duel
 
 
 class Game:
@@ -27,6 +28,7 @@ class Game:
 
     def reset(self):
         self.score = 0
+        self.level = Duel()
         self.load_sprites()
 
     def create_window(self):
@@ -43,7 +45,8 @@ class Game:
         self.meteor_group = pygame.sprite.Group()
         self.add_meteors()
 
-        self.enemy_group = pygame.sprite.Group()
+        # self.enemy_group = pygame.sprite.Group()
+        self.enemy_group = self.level.enemy_group
 
         self.player_laser_group = pygame.sprite.Group()
 
@@ -71,8 +74,9 @@ class Game:
         self.meteor_group.update()
         self.player_laser_group.update()
         self.enemy_laser_group.update()
-        if not len(self.enemy_group):
-            self.create_enemy()
+        self.level.update(self.player)
+        # if not len(self.enemy_group):
+            # self.create_enemy()
         target = self.player.x, self.player.y
         self.enemy_group.update(target, self.meteor_group)
 
@@ -88,7 +92,7 @@ class Game:
         self.draw_score()
 
     def add_meteors(self):
-        meteors = [Meteor() for i in range(randint(0, 3))]
+        meteors = [Meteor() for i in range(randint(0, 2))]
         self.meteor_group.add(meteors)
 
     def fire(self):
