@@ -9,6 +9,7 @@ from .sprites.enemy import Enemy
 from .menu import Menu
 from .audio import Audio
 from .levels import Duel
+from .levels import FourShip
 
 
 class Game:
@@ -23,13 +24,13 @@ class Game:
         self.audio = Audio()
         self.mode = "menu"
         self.menu = Menu()
-        self.n_level = 1
+        self.n_level = 2
         self.reset()
 
     def reset(self):
         self.score = 0
         self.level_idx = 0
-        self.levels = [Duel()]
+        self.levels = [Duel(),FourShip()]
         self.level = self.levels[0]
         self.load_sprites()
         self.load_level()

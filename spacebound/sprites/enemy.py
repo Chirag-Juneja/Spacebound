@@ -5,13 +5,12 @@ import random
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, x=None, y=None):
         super().__init__()
         self.image = pygame.image.load(gl.enemy_path)
         self.image_blast = pygame.image.load(gl.laser_green_blast_path)
         self.rect = self.image.get_rect()
-        self.x = random.randint(0, gl.window_width)
-        self.y = -int(gl.window_height * 0.1)
+        self.init_pos(x, y)
         self.rect.center = [self.x, self.y]
         self.fire_ready = True
         self.cooldown = 1000
@@ -19,6 +18,16 @@ class Enemy(pygame.sprite.Sprite):
         self.destroy = False
         self.blast_counter = 5
         self.gap = 5
+
+    def init_pos(self, x, y):
+        if not x:
+            self.x = random.randint(0, gl.window_width)
+        else:
+            self.x = x
+        if not y:
+            self.y = -int(gl.window_height * 0.1)
+        else:
+            self.y = y
 
     def move(self, target, meteor_group):
         meteor_corners = []
@@ -47,10 +56,14 @@ class Enemy(pygame.sprite.Sprite):
             dx = speed
         if self.x - tx > 0:
             dx = -speed
-        if self.y > gl.window_height * 0.4:
-            dy = 0
-        else:
+        if self.y > ty:
+            dy = -gl.speed
+        if self.y < ty:
             dy = gl.speed
+        if abs(self.x - tx) < 2:
+            dx = 0
+        if abs(self.y - ty) < 2:
+            dy = 0
         self.x += dx
         self.y += dy
 

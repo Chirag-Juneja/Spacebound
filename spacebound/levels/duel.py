@@ -2,6 +2,7 @@ import pygame
 from random import randint
 from spacebound.sprites.enemy import Enemy
 from spacebound.sprites.meteor import Meteor
+import spacebound.globals as gl
 
 
 class Duel:
@@ -11,7 +12,7 @@ class Duel:
         self.cooldown = 1000
         self.last_live_enemy = pygame.time.get_ticks()
         self.enemy_count = 0
-        self.n_enemy = 5
+        self.n_enemy = 3
         self.isactive = True
 
     def create_enemy(self):
@@ -29,7 +30,7 @@ class Duel:
         else:
             self.last_live_enemy = pygame.time.get_ticks()
 
-        target = player.x, player.y
+        target = player.x, gl.window_height*0.4 
         self.enemy_group.update(target, self.meteor_group)
 
     def enemy_event(self):
