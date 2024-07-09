@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
         self.fire_ready = True
         self.cooldown = 500
         self.last_fired = 0
-        self.destroy = False
+        self._destroy = False
         self.blast_counter = 10
 
     def move(self, dx=0, dy=0):
@@ -43,8 +43,12 @@ class Player(pygame.sprite.Sprite):
             laser = Laser(self.x, self.y, 0)
             return laser
 
+    def destory(self, audio):
+        self._destroy = True
+        audio.explosion_player()
+
     def update(self):
-        if self.destroy:
+        if self._destroy:
             self.image = self.image_blast
             self.rect = self.image.get_rect()
             self.rect.center = [self.x, self.y]

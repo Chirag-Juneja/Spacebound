@@ -1,4 +1,3 @@
-
 import pygame
 from random import randint
 from spacebound.sprites.enemy import Enemy
@@ -21,11 +20,11 @@ class FourShip:
 
     def get_formation_echelon_left(self, live_enemy_count):
         pos = []
-        for idx in range(1,live_enemy_count+1):
-            w = gl.window_width / (live_enemy_count+1)
-            x = idx*(w+1)
-            y = idx*gl.window_height*0.1
-            pos.append([x,y])
+        for idx in range(1, live_enemy_count + 1):
+            w = gl.window_width / (live_enemy_count + 1)
+            x = idx * (w + 1)
+            y = idx * gl.window_height * 0.1
+            pos.append([x, y])
         return pos
 
     def create_wave(self):
@@ -51,8 +50,8 @@ class FourShip:
         live_enemy_count = len(self.enemy_group)
         pos = self.get_formation_echelon_left(live_enemy_count)
         logger.debug(f"positions {pos}")
-        for idx,enemy in enumerate(self.enemy_group.sprites()):
-            enemy.update(pos[idx],self.meteor_group)
+        for idx, enemy in enumerate(self.enemy_group.sprites()):
+            enemy.update(pos[idx], self.meteor_group)
 
     def enemy_event(self):
         pass

@@ -30,7 +30,7 @@ class Game:
     def reset(self):
         self.score = 0
         self.level_idx = 0
-        self.levels = [Duel(),FourShip()]
+        self.levels = [Duel(), FourShip()]
         self.level = self.levels[0]
         self.load_sprites()
         self.load_level()
@@ -120,8 +120,7 @@ class Game:
             self.player_group, self.meteor_group, False, False
         )
         for player in player_collision:
-            player.destroy = True
-            self.audio.explosion_player()
+            player.destory(self.audio)
         enemy_laser_collisions = pygame.sprite.groupcollide(
             self.enemy_laser_group, self.meteor_group, False, False
         )
@@ -136,20 +135,17 @@ class Game:
             self.player_group, self.enemy_laser_group, False, False
         )
         for player in player_collision:
-            player.destroy = True
-            self.audio.explosion_player()
+            player.destory(self.audio)
         enemy_collision = pygame.sprite.groupcollide(
             self.enemy_group, self.player_laser_group, False, False
         )
         for enemy in enemy_collision:
-            enemy.destroy = True
-            self.audio.explosion_enemy()
+            self.score += enemy.destroy(self.audio)
         enemy_collision = pygame.sprite.groupcollide(
             self.enemy_group, self.meteor_group, False, False
         )
         for enemy in enemy_collision:
-            enemy.destroy = True
-            self.audio.explosion_enemy()
+            self.score += enemy.destroy(self.audio)
 
     def enemy_fire(self):
         for enemy in self.enemy_group.sprites():
@@ -164,8 +160,7 @@ class Game:
         self.screen.blit(img, (x - w // 2, y))
 
     def update_score(self):
-        if self.mode == "play":
-            self.score += 1
+        pass
 
     def draw_score(self):
         x = int(gl.window_width / 2)

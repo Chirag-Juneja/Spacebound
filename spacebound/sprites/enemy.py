@@ -15,9 +15,10 @@ class Enemy(pygame.sprite.Sprite):
         self.fire_ready = True
         self.cooldown = 1000
         self.last_fired = 0
-        self.destroy = False
+        self._destroy = False
         self.blast_counter = 5
         self.gap = 5
+        self.points = 10
 
     def init_pos(self, x, y):
         if not x:
@@ -68,7 +69,7 @@ class Enemy(pygame.sprite.Sprite):
         self.y += dy
 
     def fire(self):
-        if self.destroy:
+        if self._destroy:
             return
 
         now = pygame.time.get_ticks()
@@ -82,8 +83,16 @@ class Enemy(pygame.sprite.Sprite):
             laser = Laser(self.x, self.y, 1, "Green")
             return laser
 
+    def destroy(self, audio):
+        if self._destroy:
+            return 0
+        else:
+            self._destroy = True
+            audio.explosion_enemy()
+            return self.points
+
     def update(self, target, meteor_group):
-        if self.destroy:
+        if self._destroy:
             self.image = self.image_blast
             self.rect = self.image.get_rect()
             self.rect.center = [self.x, self.y]

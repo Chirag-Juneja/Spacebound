@@ -30,7 +30,7 @@ class Duel:
         else:
             self.last_live_enemy = pygame.time.get_ticks()
 
-        target = player.x, gl.window_height*0.4 
+        target = player.x, gl.window_height * 0.4
         self.enemy_group.update(target, self.meteor_group)
 
     def enemy_event(self):
