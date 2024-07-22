@@ -1,6 +1,7 @@
 import pygame
 from random import randint
 from spacebound.sprites.enemy import Enemy
+from spacebound.sprites.enemy_ray import EnemyRay
 from spacebound.sprites.meteor import Meteor
 import spacebound.globals as gl
 
@@ -18,7 +19,7 @@ class Duel:
     def create_enemy(self):
         now = pygame.time.get_ticks()
         if now - self.last_live_enemy > self.cooldown:
-            enemy = Enemy()
+            enemy = EnemyRay()
             self.enemy_group.add(enemy)
             self.enemy_count += 1
             if self.enemy_count > self.n_enemy:
