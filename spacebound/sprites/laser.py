@@ -16,6 +16,9 @@ class Laser(pygame.sprite.Sprite):
         if color == "Green":
             self.image = pygame.image.load(gl.laser_green_path)
             self.image_blast = pygame.image.load(gl.laser_green_blast_path)
+        if color == "GreenBold":
+            self.image = pygame.image.load(gl.laser_green_bold_path)
+            self.image_blast = pygame.image.load(gl.laser_green_blast_path)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.direction = direction

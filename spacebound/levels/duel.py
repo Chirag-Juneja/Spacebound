@@ -7,19 +7,23 @@ import spacebound.globals as gl
 
 
 class Duel:
-    def __init__(self):
+    def __init__(self, enemy_type="enemy", n_enemy=3):
         self.enemy_group = pygame.sprite.Group()
         self.meteor_group = pygame.sprite.Group()
         self.cooldown = 1000
         self.last_live_enemy = pygame.time.get_ticks()
         self.enemy_count = 0
-        self.n_enemy = 3
+        self.n_enemy = n_enemy
         self.isactive = True
+        self.enemy_type = enemy_type
 
     def create_enemy(self):
         now = pygame.time.get_ticks()
         if now - self.last_live_enemy > self.cooldown:
-            enemy = EnemyRay()
+            if self.enemy_type == "enemy":
+                enemy = Enemy()
+            elif self.enemy_type == "enemy_ray":
+                enemy = EnemyRay()
             self.enemy_group.add(enemy)
             self.enemy_count += 1
             if self.enemy_count > self.n_enemy:

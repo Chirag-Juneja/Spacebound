@@ -24,13 +24,13 @@ class Game:
         self.audio = Audio()
         self.mode = "menu"
         self.menu = Menu()
-        self.n_level = 2
+        self.n_level = 3
         self.reset()
 
     def reset(self):
         self.score = 0
         self.level_idx = 0
-        self.levels = [Duel(), FourShip()]
+        self.levels = [Duel(), FourShip(), Duel(enemy_type="enemy_ray")]
         self.level = self.levels[0]
         self.load_sprites()
         self.load_level()
@@ -121,21 +121,22 @@ class Game:
         )
         for player in player_collision:
             player.destory(self.audio)
-        enemy_laser_collisions = pygame.sprite.groupcollide(
-            self.enemy_laser_group, self.meteor_group, False, False
-        )
-        for laser in enemy_laser_collisions:
-            laser.hit = True
         player_laser_collisions = pygame.sprite.groupcollide(
             self.player_laser_group, self.meteor_group, False, False
         )
         for laser in player_laser_collisions:
             laser.hit = True
-        player_collision = pygame.sprite.groupcollide(
+        player_enemy_collision = pygame.sprite.groupcollide(
             self.player_group, self.enemy_laser_group, False, False
         )
-        for player in player_collision:
+        for player in player_enemy_collision:
             player.destory(self.audio)
+
+        enemy_laser_collisions = pygame.sprite.groupcollide(
+            self.enemy_laser_group, self.meteor_group, False, False
+        )
+        for laser in enemy_laser_collisions:
+            laser.hit = True
         enemy_collision = pygame.sprite.groupcollide(
             self.enemy_group, self.player_laser_group, False, False
         )
@@ -183,8 +184,9 @@ class Game:
                         self.level.meteor_event()
                     if event.type == self.SCORE_EVENT:
                         self.update_score()
-                    if event.type == self.ENEMY_EVENT:
-                        self.enemy_fire()
+                    # if event.type == self.ENEMY_EVENT:
+
+                self.enemy_fire()
 
                 keys = pygame.key.get_pressed()
 

@@ -13,7 +13,7 @@ class FourShip:
         self.cooldown = 1000
         self.last_live_enemy = pygame.time.get_ticks()
         self.enemy_count = 4
-        self.n_waves = 5
+        self.n_waves = 3
         self.isactive = True
         self.wave_count = 0
         self.formation = "echelon"
