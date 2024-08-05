@@ -6,6 +6,7 @@ from .sprites.player import Player
 from .sprites.meteor import Meteor
 from .sprites.laser import Laser
 from .sprites.enemy import Enemy
+from .sprites.health import Health
 from .menu import Menu
 from .audio import Audio
 from .levels import Duel
@@ -41,7 +42,11 @@ class Game:
 
     def load_sprites(self):
         self.player = Player()
+        self.health = Health()
         self.background = Background()
+
+        self.health_group = pygame.sprite.Group()
+        self.health_group.add(self.health)
 
         self.player_group = pygame.sprite.Group()
         self.player_group.add(self.player)
@@ -80,6 +85,7 @@ class Game:
         self.meteor_group.update()
         self.player_laser_group.update()
         self.enemy_laser_group.update()
+        self.health_group.update()
         self.level.update(self.player)
         if not self.level.isactive:
             self.change_level()
@@ -93,6 +99,7 @@ class Game:
         self.enemy_laser_group.draw(self.screen)
         self.player_group.draw(self.screen)
         self.enemy_group.draw(self.screen)
+        self.health_group.draw(self.screen)
         self.draw_score()
 
     def fire(self):
